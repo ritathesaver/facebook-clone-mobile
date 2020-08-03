@@ -1,81 +1,77 @@
-
-import React, {useState} from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  Image,
-  TouchableOpacity
-} from 'react-native';
+import React, { useState } from 'react'
+import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native'
 
 import DeleteButton from '../assets/delete.svg'
-import {deleteRequest} from '../api.service.js'
+import { deleteRequest } from '../api.service.js'
 
+export default (CommentItem = ({ item }) => {
+	const [ isDeleted, setIsDeleted ] = useState(false)
 
-export default function CommentItem({ item }) {
-  const [isDeleted, setIsDeleted] = useState(false)
+	const onPress = async (e) => {
+		await deleteRequest(`/api/comments/${item._id}`)
+		setIsDeleted(true)
+	}
+	if (isDeleted) {
+		return <Text style={styles.commentDeleted}>Comment deleted.</Text>
+	}
 
-
-  const onPress = async (e) => {
-
-    await deleteRequest(`/api/comments/${item._id}`)
-    setIsDeleted(true)
-  }
-  if (isDeleted) {
-    return (<Text>Comment deleted</Text>)
-  }
-
-  return (
-    <View style={styles.containerComment}>
-      <View style={styles.header}>
-        <Image style={styles.avatar} source={{ uri: item.user.avatarUrl }}></Image>
-        <Text styles={styles.userName}>{item.user.name} {item.user.surname}</Text>
-
-      </View>
-      <Text style={styles.commentText}>{item.text}</Text>
-      <TouchableOpacity onPress={onPress} ><DeleteButton style={styles.buttonDelete}></DeleteButton></TouchableOpacity>
-
-    </View>
-
-  );
-}
-
+	return (
+		<View style={styles.containerComment}>
+			<View style={styles.header}>
+				<View style={styles.headerBody}>
+					<Image style={styles.avatar} source={{ uri: item.user.avatarUrl }} />
+					<Text styles={styles.userName}>
+						{item.user.name} {item.user.surname}
+					</Text>
+				</View>
+				<TouchableOpacity style={styles.buttonContainer} onPress={onPress}>
+					<DeleteButton style={styles.buttonDelete} />
+				</TouchableOpacity>
+			</View>
+			<Text style={styles.commentText}>{item.text}</Text>
+		</View>
+	)
+})
 
 const styles = StyleSheet.create({
-  containerComment: {
-    marginVertical: 10,
+	containerComment: {
+		marginVertical: 10,
 
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
+		borderBottomWidth: 1,
+		borderBottomColor: '#ccc'
+	},
 
-  header: {
-    flex: 1,
-    flexDirection: 'row',
-    flexWrap: 'nowrap',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    width: 105,
-    marginBottom: 8
+	header: {
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'space-between',
+		marginBottom: 8
+	},
 
-  },
+	headerBody: {
+		flexDirection: 'row',
+		alignItems: 'center'
+	},
 
-  avatar: {
-    width: 32,
-    height: 32,
-    borderRadius: 20
-  },
+	avatar: {
+		width: 32,
+		height: 32,
+		borderRadius: 20,
+		marginRight: 10
+	},
 
-  userName: {
-    marginLeft: 16,
-    fontSize: 15
-  },
+	userName: {
+		fontSize: 15
+	},
 
-  buttonDelete: {
-    position: 'absolute',
-    right: 10,
-    bottom: 35
-  }
-});
-
-
+	buttonDelete: {
+		width: 20,
+		height: 20
+	},
+	commentDeleted: {
+		textAlign: 'center',
+		textTransform: 'uppercase',
+		textDecorationLine: 'underline',
+		marginBottom: 10
+	}
+})

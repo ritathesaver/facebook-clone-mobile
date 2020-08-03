@@ -1,82 +1,67 @@
-
-import React from 'react';
-import {
-  StyleSheet,
-  View,
-  FlatList,
-  TextInput,
-  Button
-} from 'react-native';
+import React from 'react'
+import { StyleSheet, View, FlatList, TextInput, Button, KeyboardAvoidingView } from 'react-native'
 import CommentItem from './CommentItem'
 import { useState, useEffect } from 'react'
 import { getRequest, postRequest } from '../api.service'
 
+export default (CommentList = ({ postId, user, addComment }) => {
+	const [ commentList, setCommentList ] = useState([])
 
-export default function CommentList({ postId, user, addComment }) {
+	const [ input, setInput ] = useState('')
 
-  const [commentList, setCommentList] = useState([]);
+	const onSubmit = async (e) => {
+		//addComment()
+		await postRequest('/api/comments/', {
+			text: input,
+			postId,
+			userId: user._id
+		})
+		setInput('')
+		const { data } = await getRequest(`/api/comments/${postId}`)
+		console.log(data)
 
-  const [input, setInput] = useState('')
+		setCommentList(data)
+	}
 
-  const onSubmit = async (e) => {
+	useEffect(() => {
+		;(async () => {
+			const { data } = await getRequest(`/api/comments/${postId}`)
+			// console.log(data)
+			console.log(postId)
 
-    //addComment()
-    await postRequest(`/api/comments/`, { text: input, postId, userId: user._id })
-    setInput('')
-    const { data } = await getRequest(`/api/comments/${postId}`)
-    console.log(data)
+			setCommentList(data)
+		})()
+	}, [])
 
-    setCommentList(data);
-  }
+	return (
+		<View>
+			<View style={styles.commentList}>
+				{commentList.map((item) => <CommentItem key={item._id} item={item} />)}
+			</View>
+			<TextInput
+				style={styles.inputForm}
+				onChangeText={(text) => setInput(text)}
+				defaultValue={input}
+				placeholder="Type your comment..."
+			/>
 
-
-  useEffect(() => {
-    (async () => {
-      const { data } = await getRequest(`/api/comments/${postId}`)
-     // console.log(data)
-      console.log(postId)
-
-      setCommentList(data);
-    })();
-  }, []);
-
-
-  return (
-    <View>
-    <FlatList style={styles.commentList}
-      data={commentList}
-      keyExtractor={item => item._id}
-      renderItem={({ item }) => <CommentItem item={item} />}
-    />
-      <TextInput style={styles.inputForm}
-        onChangeText={text => setInput(text)}
-        defaultValue={input}
-        placeholder="Type your comment..."
-      />
-
-      <Button style={styles.button} color="black"  title="Send" onPress={onSubmit}></Button>
-      
-    </View>
-
-  );
-}
-
+			<Button style={styles.button} color="black" title="Send" onPress={onSubmit} />
+		</View>
+	)
+})
 
 const styles = StyleSheet.create({
-  containerPost: {
-
-    flexDirection: 'column',
-    padding: 10,
-  },
-  commentList: {
-    marginBottom: 15
-  },
-  inputForm: {
-    height: 20,
-    borderBottomColor: 'gray',
-    borderBottomWidth: 1,
-    marginBottom:4
-  }
-});
-
-
+	containerPost: {
+		flexDirection: 'column',
+		padding: 10
+	},
+	commentList: {
+		marginBottom: 15
+	},
+	inputForm: {
+		height: 20,
+		borderBottomColor: 'gray',
+		borderBottomWidth: 1,
+		marginBottom: 4
+	}
+})

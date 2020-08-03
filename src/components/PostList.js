@@ -1,45 +1,43 @@
-
-import React from 'react';
-import {
-  StyleSheet,
-  View,
-  ScrollView,
-  FlatList
-} from 'react-native';
+import React, { useState } from 'react'
+import { StyleSheet, View, ScrollView, FlatList, KeyboardAvoidingView } from 'react-native'
 import PostItem from './PostItem'
-import { useState, useEffect } from 'react'
-import {getRequest} from '../api.service'
+import { getRequest } from '../api.service'
+import { useFocusEffect } from '@react-navigation/native'
 
+const PostList = ({ navigation }) => {
+	const [ postList, setPostList ] = useState([])
 
-export default function PostList() {
+	useFocusEffect(() => {
+		;(async () => {
+			const { data } = await getRequest('/api/posts')
 
- const [postList, setPostList] = useState([]);
+			setPostList(data)
+		})()
+	}, [])
 
-  useEffect(() => {
-      (async () => {
-        const { data } = await getRequest('/api/posts')
+	if (postList.length === 0) {
+		return null
+	}
 
-        setPostList(data);
-      })();
-    }, []);
-
-  return (
-    <FlatList
-      data={postList}
-      keyExtractor={item => item._id}
-      renderItem={({ item }) => <PostItem navigation={navigation} item={item} />}
-    />
-  
-  );
+	return (
+		<KeyboardAvoidingView style={styles.containerPost} behavior="padding" keyboardVerticalOffset={100}>
+			<FlatList
+				data={postList}
+				keyExtractor={(item) => item._id}
+				renderItem={({ item }) => <PostItem withMargin navigation={navigation} item={item} />}
+			/>
+		</KeyboardAvoidingView>
+	)
 }
 
+export default PostList
 
 const styles = StyleSheet.create({
-  containerPost: {
-
-    flexDirection: 'column',
-    padding: 15, 
-  }
-});
-
-
+	containerPost: {
+		backgroundColor: '#37393b',
+		alignItems: 'center',
+		width: '100%',
+		flexDirection: 'column',
+		flex: 1
+	}
+})
