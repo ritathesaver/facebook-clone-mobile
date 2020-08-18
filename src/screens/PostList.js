@@ -1,19 +1,23 @@
-import React, { useState } from 'react'
+import React, { useState, useCallback } from 'react'
 import { StyleSheet, View, ScrollView, FlatList, KeyboardAvoidingView } from 'react-native'
-import PostItem from './PostItem'
+import PostItem from '../components/PostItem'
 import { getRequest } from '../api.service'
 import { useFocusEffect } from '@react-navigation/native'
 
 const PostList = ({ navigation }) => {
 	const [ postList, setPostList ] = useState([])
 
-	useFocusEffect(() => {
-		;(async () => {
-			const { data } = await getRequest('/api/posts')
+	useFocusEffect(
+		useCallback(() => {
+			;(async () => {
+				const { data } = await getRequest('/api/posts')
+				console.log(Date.now())
 
-			setPostList(data)
-		})()
-	}, [])
+				setPostList(data)
+			})()
+		}, []),
+		[]
+	)
 
 	if (postList.length === 0) {
 		return null

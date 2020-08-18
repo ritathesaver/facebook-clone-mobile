@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { StyleSheet, View, Text, Image, TouchableOpacity } from 'react-native'
+import FastImage from 'react-native-fast-image'
 
 import DeleteButton from '../assets/delete.svg'
 import { deleteRequest } from '../api.service.js'
@@ -19,7 +20,7 @@ export default (CommentItem = ({ item }) => {
 		<View style={styles.containerComment}>
 			<View style={styles.header}>
 				<View style={styles.headerBody}>
-					<Image style={styles.avatar} source={{ uri: item.user.avatarUrl }} />
+					<FastImage style={styles.avatar} source={{ uri: item.user.avatarUrl }} />
 					<Text styles={styles.userName}>
 						{item.user.name} {item.user.surname}
 					</Text>

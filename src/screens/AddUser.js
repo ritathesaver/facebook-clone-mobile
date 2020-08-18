@@ -3,7 +3,7 @@ import { StyleSheet, View, Text, Button } from 'react-native'
 import { postRequest } from '../api.service'
 import { AppContext } from '../services/AppContext'
 import AsyncStorage from '@react-native-community/async-storage'
-import Input from './Input.js'
+import Input from '../components/Input.js'
 
 export default (AddUser = ({ navigation }) => {
 	const [ nameInput, setNameInput ] = useState('')
@@ -17,11 +17,12 @@ export default (AddUser = ({ navigation }) => {
 			surname: surnameInput
 		}
 
-		const { data } = await postRequest('/api/users/', user)
+		const { data } = await postRequest('/api/users/', user, {
+			headers: { 'Content-Type': 'application/json;charset=utf-8' }
+		})
 		if (data.error) {
 			return
 		}
-		console.log(data)
 
 		setNameInput('')
 		setSurnameInput('')

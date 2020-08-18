@@ -19,7 +19,6 @@ export const AppProvider = () => {
 		})()
 	}, [])
 
-	console.log(122333, user, loading)
 	if (loading) {
 		return null
 	}

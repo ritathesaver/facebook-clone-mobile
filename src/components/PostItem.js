@@ -1,6 +1,7 @@
 import React, { useState, useRef, useContext } from 'react'
 import { StyleSheet, View, Image, Text, TouchableWithoutFeedback, TouchableOpacity } from 'react-native'
 import Menu, { MenuItem, MenuDivider } from 'react-native-material-menu'
+import FastImage from 'react-native-fast-image'
 
 import LikeSvg from '../assets/2.svg'
 import CommentSvg from '../assets/comment.svg'
@@ -47,7 +48,7 @@ const PostItem = ({ item, navigation, withMargin = false }) => {
 		<View style={[ styles.container, withMargin ? styles.containerMargin : {} ]}>
 			<View style={styles.header}>
 				<View style={styles.userInf}>
-					<Image source={{ uri: item.user.avatarUrl }} style={styles.avatar} />
+					<FastImage source={{ uri: item.user.avatarUrl }} style={styles.avatar} />
 					<Text style={styles.userName}>
 						{item.user.name} {item.user.surname}
 					</Text>
@@ -58,7 +59,7 @@ const PostItem = ({ item, navigation, withMargin = false }) => {
 							ref={menuRef}
 							button={
 								<TouchableOpacity onPress={showMenu}>
-									<Image
+									<FastImage
 										source={{
 											uri:
 												'https://cdn4.iconfinder.com/data/icons/pictype-free-vector-icons/16/more-512.png'
@@ -79,9 +80,11 @@ const PostItem = ({ item, navigation, withMargin = false }) => {
 			<TouchableWithoutFeedback onPress={() => navigation.navigate('Details', { item })}>
 				<View style={styles.body}>
 					<Text style={styles.postText}>{item.text}</Text>
-					<View style={styles.picContainer}>
-						<Image source={{ uri: item.imageUrl }} style={styles.postPic} />
-					</View>
+					{item.imageUrl && (
+						<View style={styles.picContainer}>
+							<Image source={{ uri: item.imageUrl }} style={styles.postPic} />
+						</View>
+					)}
 					<View style={styles.line} />
 				</View>
 			</TouchableWithoutFeedback>
@@ -100,10 +103,7 @@ const PostItem = ({ item, navigation, withMargin = false }) => {
 					<Text>{commentsCount}</Text>
 				</View>
 			</View>
-			<CommentList postId={item._id} user={item.user}>
-				{' '}
-				addComment={() => setCommentsCount(commentsCount + 1)}
-			</CommentList>
+			<CommentList postId={item._id} user={item.user} addComment={() => setCommentsCount(commentsCount + 1)} />
 		</View>
 	)
 }

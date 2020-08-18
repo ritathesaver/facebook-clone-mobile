@@ -1,6 +1,6 @@
 import React from 'react'
 import { StyleSheet, View, Image, Text, ScrollView, KeyboardAvoidingView } from 'react-native'
-import PostItem from './PostItem.js'
+import PostItem from '../components/PostItem.js'
 
 export default (PostDetails = ({ navigation, route }) => {
 	return (

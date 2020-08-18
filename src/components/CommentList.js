@@ -10,7 +10,6 @@ export default (CommentList = ({ postId, user, addComment }) => {
 	const [ input, setInput ] = useState('')
 
 	const onSubmit = async (e) => {
-		//addComment()
 		await postRequest('/api/comments/', {
 			text: input,
 			postId,
@@ -18,7 +17,6 @@ export default (CommentList = ({ postId, user, addComment }) => {
 		})
 		setInput('')
 		const { data } = await getRequest(`/api/comments/${postId}`)
-		console.log(data)
 
 		setCommentList(data)
 	}
@@ -26,8 +24,6 @@ export default (CommentList = ({ postId, user, addComment }) => {
 	useEffect(() => {
 		;(async () => {
 			const { data } = await getRequest(`/api/comments/${postId}`)
-			// console.log(data)
-			console.log(postId)
 
 			setCommentList(data)
 		})()

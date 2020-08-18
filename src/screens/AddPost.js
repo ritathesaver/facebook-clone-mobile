@@ -1,9 +1,10 @@
 import React, { useState, useContext } from 'react'
 import { StyleSheet, View, Image, Button } from 'react-native'
 import { postRequest, putRequest } from '../api.service'
-import Input from './Input.js'
+import Input from '../components/Input.js'
 import { AppContext } from '../services/AppContext'
 import ImagePicker from 'react-native-image-picker'
+import FastImage from 'react-native-fast-image'
 
 export default (AddPost = ({ navigation, route }) => {
 	const { item } = route.params || {}
@@ -11,6 +12,8 @@ export default (AddPost = ({ navigation, route }) => {
 	const [ photo, setPhoto ] = useState({})
 
 	const { user } = useContext(AppContext)
+
+	let ifChanged = false
 
 	const onSubmit = async (e) => {
 		const data = new FormData()
@@ -32,11 +35,6 @@ export default (AddPost = ({ navigation, route }) => {
 		}
 		setTextInput('')
 
-		// navigation.reset({
-		// 	index: 0,
-		// 	routes: [ { name: 'Home' } ]
-		// })
-
 		navigation.goBack()
 	}
 
@@ -49,6 +47,7 @@ export default (AddPost = ({ navigation, route }) => {
 				setPhoto(response)
 			}
 		})
+		ifChanged = true
 	}
 
 	return (
@@ -60,10 +59,16 @@ export default (AddPost = ({ navigation, route }) => {
 				placeholder="Your post..."
 				multiline
 			/>
-			<View style={styles.picContainer}>
-				{photo.uri && <Image source={{ uri: photo.uri }} style={styles.postPic} />}
-				<Button style={styles.button} color="black" title="Choose image" onPress={handleChoosePhoto} />
-			</View>
+			{item.imageUrl ? (
+				<View style={styles.picContainer}>
+					{(item.imageUrl && <FastImage source={{ uri: item.imageUrl }} style={styles.postPic} />) ||
+						(photo.uri && <FastImage source={{ uri: photo.uri }} style={styles.postPic} />)}
+				</View>
+			) : (
+				<Text>lol</Text>
+			)}
+
+			<Button style={styles.button} color="black" title="Choose image" onPress={handleChoosePhoto} />
 
 			<Button style={styles.button} color="black" title="Send" onPress={onSubmit} />
 		</View>

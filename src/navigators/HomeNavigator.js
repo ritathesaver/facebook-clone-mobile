@@ -1,9 +1,9 @@
-import * as React from 'react'
+import React from 'react'
 import { TouchableOpacity, StyleSheet } from 'react-native'
 import { createStackNavigator } from '@react-navigation/stack'
-import AddPost from './AddPost.js'
-import PostList from './PostList.js'
-import PostDetails from './PostDetails.js'
+import AddPost from '../screens/AddPost.js'
+import PostList from '../screens/PostList.js'
+import PostDetails from '../screens/PostDetails.js'
 import AddSvg from '../assets/add.svg'
 
 const screenStyle = {
